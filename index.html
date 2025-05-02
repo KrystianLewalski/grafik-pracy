@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grafik Pracy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <h1>Grafik Pracy</h1>
+
+    <div class="schedule-container">
+      <label for="year">Rok:</label>
+      <input type="number" id="year" value="2025" min="2000" max="2100">
+
+      <label for="month">Miesiąc:</label>
+      <select id="month">
+        <option value="1">Styczeń</option>
+        <option value="2">Luty</option>
+        <option value="3">Marzec</option>
+        <option value="4">Kwiecień</option>
+        <option value="5">Maj</option>
+        <option value="6">Czerwiec</option>
+        <option value="7">Lipiec</option>
+        <option value="8">Sierpień</option>
+        <option value="9">Wrzesień</option>
+        <option value="10">Październik</option>
+        <option value="11">Listopad</option>
+        <option value="12">Grudzień</option>
+      </select>
+
+      <button onclick="generateCalendar()">Generuj grafik</button>
+
+      <!-- Pole na imię i nazwisko -->
+      <input type="text" id="name" placeholder="Imię i nazwisko">
+
+      <label for="shift">Wybierz zmianę:</label>
+      <select id="shift">
+        <option value="8-15">Pon-Pt: 8:00 - 15:00</option>
+        <option value="15-22">Pon-Pt: 15:00 - 22:00</option>
+        <option value="10-18">Sobota: 10:00 - 18:00</option>
+        <option value="10-14">Niedziela: 10:00 - 14:00</option>
+        <option value="SWIĘTA">Święta</option>
+      </select>
+      <!-- Pole na określenie godzin dla zmiany Święta (domyślnie ukryte) -->
+      <input type="text" id="customShift" placeholder="Godziny zmiany Święta" style="display: none;">
+
+      <button onclick="assignWorker()">Dodaj pracownika do zaznaczonego dnia</button>
+      
+      <!-- Globalne przyciski do edycji/usuwania wpisów -->
+      <button onclick="editWorker()">Edytuj pracowników</button>
+      <button onclick="removeWorker()">Usuń pracowników</button>
+      
+      <!-- Przycisk do oznaczania dnia jako "zamknięte" lub otwierania z zamkniętego -->
+      <button onclick="markClosed()">Zamknięte/Otwarte</button>
+    </div>
+
+    <!-- Pasek nad kalendarzem: miesiąc po lewej oraz logo firmy po prawej -->
+    <div id="calendarContainer">
+      <div id="calendarTitle">
+        <div class="monthName">Miesiąc</div>
+        <div class="logoContainer">
+          <img src="logo.png" alt="Logo firmy" />
+        </div>
+      </div>
+      <div class="calendarHeader">
+        <span>Pon</span>
+        <span>Wt</span>
+        <span>Śr</span>
+        <span>Czw</span>
+        <span>Pt</span>
+        <span>Sob</span>
+        <span>Nd</span>
+      </div>
+      <div id="calendarGrid"></div>
+    </div>
+
+    <button id="generateImage">Pobierz grafik jako obraz</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="script.js"></script>
+</body>
+</html>

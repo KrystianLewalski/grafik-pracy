@@ -1,0 +1,115 @@
+#app {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.schedule-container input {
+  margin-bottom: 10px;
+  position: relative;    /* Dodane: upewnij się, że inputy są na wierzchu */
+  z-index: 1000;         /* Dodane: wysoki z-index, aby nie były przykrywane */
+}
+
+/* Pasek nad kalendarzem – tytuł miesiąca i logo firmy */
+#calendarTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 2px solid #007bff;
+  background-color: #f0f8ff;
+  margin-bottom: 5px;
+}
+
+.monthName {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.logoContainer img {
+  max-height: 50px;
+}
+
+/* Nagłówek dni tygodnia */
+.calendarHeader {
+  display: flex;
+  justify-content: space-around;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  background-color: #ff0000;
+  color: white;
+  margin-top: 10px;
+  gap: 40px;
+}
+
+/* Siatka kalendarza */
+#calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 5px;
+}
+
+/* Pojedynczy kafelek dnia */
+.calendarCell {
+  max-width: 100%;
+  height: 120px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Weekendowe kafelki (soboty i niedziele) */
+.calendarCell.weekend {
+  background-color: #ffcccc;
+}
+
+/* Komórki zamknięte – używają koloru weekendowego */
+.calendarCell.closed-day {
+  background-color: #ffcccc;
+}
+
+/* Kafelki zaznaczone (wybrane do dodania/edycji) */
+.calendarCell.selected {
+  border: 2px solid #ff6600;
+  background-color: #fff5e6;
+}
+
+/* Wpis pracownika – wyświetlany w jednej linii */
+.worker-entry {
+  padding: 2px;
+  font-size: 0.8em;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+/* Zaznaczony wpis pracownika */
+.worker-entry.selected-worker {
+  background-color: #dfefff;
+  border: 1px solid #007bff;
+}
+
+/* Przycisk eksportu obrazu */
+#generateImage {
+  margin-top: 10px;
+}
+
+/* Styl komunikatu "Zamknięte" – tekst czarny, wyśrodkowany */
+.closed {
+  font-size: 1em;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Opcjonalne style dla wpisów wewnątrz komórki */
+.workers p {
+  margin: 2px 0;
+}
