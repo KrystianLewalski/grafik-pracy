@@ -5,8 +5,12 @@
 
 .schedule-container input {
   margin-bottom: 10px;
-  position: relative;    /* Dodane: upewnij się, że inputy są na wierzchu */
-  z-index: 1000;         /* Dodane: wysoki z-index, aby nie były przykrywane */
+  position: relative;
+  z-index: 1000;
+}
+
+#calendarContainer {
+  margin-top: 20px;
 }
 
 /* Pasek nad kalendarzem – tytuł miesiąca i logo firmy */
@@ -21,7 +25,7 @@
 }
 
 .monthName {
-  font-size: 1.2em;
+  font-size: 2em;
   font-weight: bold;
 }
 
@@ -36,7 +40,7 @@
   font-weight: bold;
   text-align: center;
   padding: 10px;
-  background-color: #ff0000;
+  background-color: #007bff;
   color: white;
   margin-top: 10px;
   gap: 40px;
@@ -68,24 +72,42 @@
   background-color: #ffcccc;
 }
 
-/* Komórki zamknięte – używają koloru weekendowego */
+/* Komórki zamknięte – dodatkowo ustawiamy tylko tło i pozostawiamy oryginalny layout */
 .calendarCell.closed-day {
   background-color: #ffcccc;
 }
 
-/* Kafelki zaznaczone (wybrane do dodania/edycji) */
-.calendarCell.selected {
-  border: 2px solid #ff6600;
-  background-color: #fff5e6;
+/* Dodajemy nakładkę "Zamknięte" wyśrodkowaną absolutnie */
+.closedOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1em;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  width: 100%;
+  pointer-events: none; /* Aby nie przeszkadzała w interakcji */
 }
 
-/* Wpis pracownika – wyświetlany w jednej linii */
+/* Kontener do wpisów pracowników – ustawione jako kolumna, wyśrodkowane */
+.workers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Wpis pracownika – wyświetlany jako blok (pełna szerokość kontenera) */
 .worker-entry {
   padding: 2px;
   font-size: 0.8em;
   cursor: pointer;
-  display: inline-block;
-  margin-right: 2px;
+  display: block;
+  margin: 2px 0;
+  text-align: center;
+  width: 100%;
 }
 
 /* Zaznaczony wpis pracownika */
@@ -99,17 +121,22 @@
   margin-top: 10px;
 }
 
-/* Styl komunikatu "Zamknięte" – tekst czarny, wyśrodkowany */
+/* Styl komunikatu "Zamknięte" – style nakładki, wiadomość wyśrodkowana przez .closedOverlay */
 .closed {
   font-size: 1em;
   font-weight: bold;
   color: black;
   text-align: center;
   width: 100%;
-  margin: 0 auto;
+  margin: 0;
 }
 
-/* Opcjonalne style dla wpisów wewnątrz komórki */
+/* Opcjonalne style dla wpisów wewnątrz kontenera */
 .workers p {
   margin: 2px 0;
+}
+
+.calendarCell.selected {
+  border: 2px solid #ff6600;
+  background-color: #fff5e6;
 }
