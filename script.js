@@ -2,7 +2,7 @@ const calendarDays = [];
 
 // Obsługa wyświetlania pola dla zmiany "Święta"
 document.getElementById("shift").addEventListener("change", function(){
-  if(this.value === "SWIĘTA") {
+  if (this.value === "SWIĘTA") {
     document.getElementById("customShift").style.display = "inline-block";
   } else {
     document.getElementById("customShift").style.display = "none";
@@ -15,7 +15,7 @@ function generateCalendar() {
   const firstDay = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
 
-  // Aktualizacja tytułu kalendarza (miesiąc i rok)
+  // Aktualizacja tytułu kalendarza (miesiąc)
   const monthSelect = document.getElementById("month");
   const monthText = monthSelect.options[monthSelect.selectedIndex].text;
   document.querySelector("#calendarTitle .monthName").innerText = monthText;
@@ -38,6 +38,8 @@ function generateCalendar() {
   for (let day = 1; day <= daysInMonth; day++) {
     let dayCell = document.createElement("div");
     dayCell.className = "calendarCell";
+    // Zapisujemy numer dnia jako atrybut, żeby można było go przywrócić, gdy usuniemy overlay
+    dayCell.dataset.dayNumber = day;
     dayCell.innerHTML = `<span class="dayNumber">${day}</span><div class="workers"></div>`;
     // Ustalenie atrybutu data-day-of-week (pon = 1, wt = 2, …, niedziela = 7)
     let dateObj = new Date(year, month - 1, day);
@@ -45,7 +47,7 @@ function generateCalendar() {
     let dayOfWeek = (jsDay === 0 ? 7 : jsDay);
     dayCell.dataset.dayOfWeek = dayOfWeek;
     // Jeśli dzień to sobota lub niedziela, dodajemy klasę "weekend"
-    if(dayOfWeek === 6 || dayOfWeek === 7){
+    if (dayOfWeek === 6 || dayOfWeek === 7) {
       dayCell.classList.add("weekend");
     }
 
@@ -65,7 +67,7 @@ function assignWorker() {
   if (shiftVal === "SWIĘTA") {
     const custom = document.getElementById("customShift").value.trim();
     if (!custom) {
-      alert("Podaj godziny dla zmiany Święta!");
+      alert("Podaj godziny dla zmiany!");
       return;
     }
     shiftVal = custom;
@@ -104,16 +106,15 @@ function assignWorker() {
   
   // Dodajemy pracownika do każdej zaznaczonej komórki
   selectedCells.forEach(cell => {
-    if (cell.classList.contains("closed-day")) return;
-    
-    let workersList = cell.querySelector(".workers");
+    if (cell.querySelector(".closedOverlay")) return; // Nie dodajemy, gdy jest overlay
+    const workersList = cell.querySelector(".workers");
     
     // Sprawdzenie, czy ten sam pracownik (nazwa i zmiana) już istnieje w danym dniu
     let duplicate = false;
     Array.from(workersList.children).forEach(entry => {
       let entryName = entry.querySelector("strong") ? entry.querySelector("strong").innerText.trim().toLowerCase() : "";
       let entryShift = entry.querySelector(".shift") ? entry.querySelector(".shift").innerText.trim() : "";
-      if(entryName === name.toLowerCase() && entryShift === shiftVal) {
+      if (entryName === name.toLowerCase() && entryShift === shiftVal) {
         duplicate = true;
       }
     });
@@ -136,10 +137,31 @@ function assignWorker() {
         });
         
         workersList.appendChild(workerEntry);
+        // Po dodaniu, sortujemy wpisy w danym dniu
+        sortWorkers(cell);
       }
     }
     cell.classList.remove("selected");
   });
+}
+
+// Funkcja sortowania wpisów pracowników (sortujemy według godziny rozpoczęcia zmiany)
+function sortWorkers(cell) {
+  let container = cell.querySelector(".workers");
+  if (!container) return;
+  let workersArray = Array.from(container.children);
+  workersArray.sort((a, b) => {
+    let aShift = a.querySelector(".shift") ? a.querySelector(".shift").innerText.trim() : "";
+    let bShift = b.querySelector(".shift") ? b.querySelector(".shift").innerText.trim() : "";
+    
+    let aStart = parseInt(aShift.split("-")[0]);
+    let bStart = parseInt(bShift.split("-")[0]);
+    if (isNaN(aStart)) aStart = Infinity;
+    if (isNaN(bStart)) bStart = Infinity;
+    return aStart - bStart;
+  });
+  container.innerHTML = "";
+  workersArray.forEach(worker => container.appendChild(worker));
 }
 
 // Funkcja edycji zaznaczonych pracowników
@@ -186,14 +208,17 @@ function markClosed() {
   }
   
   selectedCells.forEach(cell => {
-    let dayNumber = cell.querySelector(".dayNumber").textContent;
-    if (cell.classList.contains("closed-day")) {
-      // Jeśli dzień był zamknięty – otwieramy (przywracamy normalny układ)
-      cell.innerHTML = `<span class="dayNumber">${dayNumber}</span><div class="workers"></div>`;
+    // Jeśli nakładka istnieje – usuń ją (otwieramy dzień)
+    let overlay = cell.querySelector(".closedOverlay");
+    if (overlay) {
+      overlay.remove();
       cell.classList.remove("closed-day");
     } else {
-      // Oznaczamy dzień jako zamknięty
-      cell.innerHTML = `<span class="dayNumber">${dayNumber}</span><div class="workers"><p class="closed">Zamknięte</p></div>`;
+      // Dodajemy nakładkę, która nie wpływa na pozycjonowanie oryginalnych elementów (np. numeru dnia)
+      overlay = document.createElement("div");
+      overlay.className = "closedOverlay";
+      overlay.innerText = "Zamknięte";
+      cell.appendChild(overlay);
       cell.classList.add("closed-day");
     }
     cell.classList.remove("selected");
